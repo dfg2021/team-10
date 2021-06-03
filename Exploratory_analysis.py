@@ -143,6 +143,13 @@ def exploratory_df4c(df):
     df_pivot = df_grp.pivot(index = "Education level", columns = ["Sex", "GeoAreaName"])
     print(df_pivot)
 
+# Show all missing values
+def get_missing_values(df):
+    percent_missing = df.isnull().sum() * 100 / len(df)
+    missing_value_df = pd.DataFrame({'column_name': df.columns,
+                                     'percent_missing': percent_missing})
+    print(missing_value_df)
+
 
 # Replace the Upper and Lower Bound with the maximum and minimum of
 # the values grouped by indication code, country and year
