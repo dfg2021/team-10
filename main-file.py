@@ -24,6 +24,8 @@ def main():
     exploratory_df4b(df)
     print("\n\n Exploratory analysis of Target 4.c")
     exploratory_df4c(df)
+    print("\n\n Show percentage of missing values")
+    print(get_missing_values(df))
     print("\n\n Replace Upper and LowerBound features")
     df = replace_bound_features(df)
 
