@@ -142,3 +142,26 @@ def exploratory_df4c(df):
 
     df_pivot = df_grp.pivot(index = "Education level", columns = ["Sex", "GeoAreaName"])
     print(df_pivot)
+
+
+# Replace the Upper and Lower Bound with the maximum and minimum of
+# the values grouped by indication code, country and year
+def replace_bound_features(df):
+    max_df = df[["Target", "Indicator", "GeoAreaName", "Value", "Time_Detail"]].groupby(["Target", "Indicator", "Time_Detail", "GeoAreaName"]).max()
+    max_df = max_df.reset_index()
+    max_df = max_df.rename(columns={"Value": "newValue"})
+    min_df = df[["Target", "Indicator", "GeoAreaName", "Time_Detail", "Value"]].groupby(["Target", "Indicator", "Time_Detail", "GeoAreaName"]).min()
+    min_df = min_df.reset_index()
+    min_df = min_df.rename(columns={"Value": "newValue"})
+
+    df["hashIndex"] = df.Indicator.astype(str) + df.GeoAreaName.astype(str) + df.Time_Detail.astype(str)
+    min_df["hashIndex"] = min_df.Indicator.astype(str) + min_df.GeoAreaName.astype(str) +  min_df.Time_Detail.astype(str)
+    max_df["hashIndex"] = max_df.Indicator.astype(str) + max_df.GeoAreaName.astype(str) + max_df.Time_Detail.astype(str)
+
+    df = df.set_index("hashIndex")
+    min_df = min_df.set_index("hashIndex")
+    max_df = max_df.set_index("hashIndex")
+
+    df.loc[min_df.index, "LowerBound"] = min_df.newValue
+    df.loc[max_df.index, "UpperBound"] = max_df.newValue
+    return df.reset_index(drop=True)
